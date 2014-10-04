@@ -9,6 +9,7 @@ void match(ifstream &in, char c) {
   char v = in.get();
   if(c!=v) {
     cout << "Error: expected '" << c <<"', got '"<< v <<"'\n'";
+    exit(0);
   }
 }
 
@@ -49,4 +50,9 @@ int get_num(ifstream &in) {
     res += in.get() - '0';
   }
   return res;
+}
+
+void error(string s) {
+  cout << "Error: " << s <<"\n";
+  exit(0); 
 }

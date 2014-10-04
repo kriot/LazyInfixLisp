@@ -1,1 +1,11 @@
-(plus a b (c 3 g))
+(let (a (errf))
+  (let 
+    (a 5)
+    (c 10) 
+    
+    (let (b (plus a (plus 1 2)))
+      (plus b c)
+    )
+  )
+)
+
