@@ -6,8 +6,53 @@
 
 using namespace std;
 class value {
+public:
   int type;
+  int val;
+  void print() {
+    cout << val;
+  }
 };
+
+class node {
+public:
+  bool cons;
+  bool func;
+  value val;
+  string f_name;
+  vector<node> args;
+  string v_name;
+  node(ifstream &in);
+  node();
+  void print(int n);
+};
+
+node::node() {
+}
+
+void print_n(string s, int n) {
+  for(int i = 0; i < n; ++i) {
+    cout << s;
+  }
+}
+
+void node::print(int n = 0) {
+  print_n("\t", n);
+  if(func) {
+    cout << f_name << ":\n";
+    for(int i = 0; i < args.size(); ++i) {
+      args[i].print(n+1);
+    }
+  }
+  else if(cons) {
+    cout <<"const: ";
+    val.print();
+    cout << "\n";
+  }
+  else {
+    cout <<"var: "<< v_name <<"\n";
+  }
+}
 
 class scope {
 public:
@@ -61,6 +106,10 @@ bool is_letter(char c) {
     c == '$';
 }
 
+bool is_digit(char c) {
+  return c >= '0' && c <='9';
+}
+
 string get_name(ifstream &in) {
   string res;
   while (is_letter(in.peek())) {
@@ -69,60 +118,51 @@ string get_name(ifstream &in) {
   return res;
 }
 
-string get_arg(ifstream &in) {
-  string res;
-  int n = 0;
-  whitespace(in);
-  while(!(in.peek() == ' ' && n == 0)) {
-    char c = in.get();
-    if(c=='(') ++n;
-    if(c==')') --n;
-    if(n == -1) {
-      in.unget();
-      break;
-    }
-    if(c==EOF) 
-    {
-      cout << "Error: expected ')'\n";
-      exit(0);
-    }
-    res.push_back(c);
+int get_num(ifstream &in) {
+  int res = 0;
+  while (is_digit(in.peek())) {
+    res *= 10;
+    res += in.get() - '0';
   }
   return res;
 }
 
-value evaluate_func(ifstream &in, scope s) {
-  match(in, '(');
-  string name = get_name(in);
-  vector<string> args;
-  while(in.peek() != ')' && !in.eof()) 
-  {
-    args.push_back(get_arg(in));
-  } 
-
-  cout << "Exec: "<<name<<"\nArgs:\n";
-
-  for(int i = 0; i < args.size(); i++) {
-    cout << "\t" << args[i] <<"\n";
-  }
-
-  match(in, ')');
-}
-
-value evaluate(ifstream &in, scope s) {
-  cout <<"evaluate\n";
+node::node(ifstream &in) {
+  whitespace(in);
   char c = in.peek();
   if(c == '(') {
-    return evaluate_func(in, s);
+    match(in, '(');
+    
+    func = true;
+    cons = false;
+    f_name = get_name(in);
+
+    while(whitespace(in), in.peek() != ')' && !in.eof()) 
+    {
+      args.push_back(node(in));
+    } 
+    
+    match(in, ')');
+    return;
   }
-  if(is_letter(c)) {
-//    return evaluate_operator(in, s);
+  if(is_letter(c) || is_digit(c)) {
+    //operator
+    node lp, rp;
+    if(is_letter(c)) {
+      lp.func = false;
+      lp.cons = false;
+      lp.v_name = get_name(in);
+      (*this) = lp;
+      return;
+    }
+    if(is_digit(c)) {
+      func = false;
+      cons = true;
+      val.val = get_num(in);
+      return;
+    }
   }
-  if(c == EOF) {
-    return value();
-  }
-  in.get();
-  return evaluate(in, s);
+  cout << "unexpected symbol: " <<(char)in.get()<< "\n";
 }
 
 int main(int argc, char* argv[])
@@ -133,7 +173,8 @@ int main(int argc, char* argv[])
     return 0;
   }
   in.open(argv[1]);
-  evaluate(in, scope());  
+  node n(in);
+  n.print();  
   in.close();
   return 0;
 }
