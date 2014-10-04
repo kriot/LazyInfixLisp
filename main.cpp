@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <stdlib.h>
+#include "spec.h"
 
 using namespace std;
 class value {
@@ -18,6 +19,7 @@ class node {
 public:
   bool cons;
   bool func;
+  bool syst;
   value val;
   string f_name;
   vector<node> args;
@@ -28,12 +30,6 @@ public:
 };
 
 node::node() {
-}
-
-void print_n(string s, int n) {
-  for(int i = 0; i < n; ++i) {
-    cout << s;
-  }
 }
 
 void node::print(int n = 0) {
@@ -80,52 +76,6 @@ public:
     parent = nullptr;
   }
 };
-
-void match(ifstream &in, char c) {
-  char v = in.get();
-  if(c!=v) {
-    cout << "Error: expected '" << c <<"', got '"<< v <<"'\n'";
-  }
-}
-
-void whitespace(ifstream &in) {
-  while(in.peek() == ' ' ||
-      in.peek() == '\t' ||
-      in.peek() == '\n' ||
-      in.peek() == '\r')
-  {
-    in.get();
-  }
-}
-
-bool is_letter(char c) {
-  return 
-    c >= 'a' && c <= 'z' ||
-    c >= 'A' && c <= 'Z' ||
-    c == '_' ||
-    c == '$';
-}
-
-bool is_digit(char c) {
-  return c >= '0' && c <='9';
-}
-
-string get_name(ifstream &in) {
-  string res;
-  while (is_letter(in.peek())) {
-    res.push_back(in.get());
-  }
-  return res;
-}
-
-int get_num(ifstream &in) {
-  int res = 0;
-  while (is_digit(in.peek())) {
-    res *= 10;
-    res += in.get() - '0';
-  }
-  return res;
-}
 
 node::node(ifstream &in) {
   whitespace(in);
