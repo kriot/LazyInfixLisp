@@ -1,11 +1,3 @@
-(let (a (errf))
-  (let 
-    (a 5)
-    (c 10) 
-    
-    (let (b (plus a (plus 1 2)))
-      (plus b c)
-    )
-  )
+(let (f (\ (x y) (plus x y)))
+  (f 2 5)
 )
-

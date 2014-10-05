@@ -28,7 +28,8 @@ bool is_letter(char c) {
     c >= 'a' && c <= 'z' ||
     c >= 'A' && c <= 'Z' ||
     c == '_' ||
-    c == '$';
+    c == '$' ||
+    c == '\\';
 }
 
 bool is_digit(char c) {
