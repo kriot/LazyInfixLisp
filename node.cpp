@@ -5,6 +5,8 @@
 node::node() {
 }
 
+const int max_pr = 22;
+
 void node::print() {
   print(0);
 }
@@ -35,6 +37,24 @@ void node::print(int n = 0) {
   }
 }
 
+void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
+  if(pr == 0)
+  {
+    *n = node(in);
+    return;
+  }
+  node *lp = new node();
+  get_operator_tree(in, lp, pr-1);
+  node *fn = new node();
+ // fn -> v_name = get_operator(in);
+  node *rp = new node();
+  get_operator_tree(in, rp, pr);
+  n -> node_func = fn;
+  n -> args.push_back(lp);
+  n -> args.push_back(rp);
+  n -> func = true;
+}
+
 node::node(ifstream &in) {
   syst = false;
   func = false;
@@ -54,6 +74,17 @@ node::node(ifstream &in) {
         f_name == "let" ||
         f_name == "\\"  ||
         f_name == "sub"  ||
+        f_name == "+"  ||
+        f_name == "-"  ||
+        f_name == "*"  ||
+        f_name == "/"  ||
+        f_name == ">"  ||
+        f_name == "<"  ||
+        f_name == ">="  ||
+        f_name == "<="  ||
+        f_name == "=="  ||
+        f_name == "!="  ||
+        f_name == "!"  ||
         f_name == "plus") {
       syst = true;
     }
@@ -77,6 +108,9 @@ node::node(ifstream &in) {
       return;
     }
   }
+  if(c == '{') {
+    get_operator_tree(in, this);
+  }
   cout << "unexpected symbol: " <<(char)in.get()<< "\n";
 }
 
@@ -97,7 +131,7 @@ value node::eval(scope& s) {
   if(func) {
     if(syst) {
       string f_name = node_func->v_name;
-      if(f_name == "plus") {
+      if(f_name == "plus" || f_name == "+") {
         value res;
         res.val = 0;
         for(int i = 0; i<args.size(); ++i) {
@@ -105,7 +139,33 @@ value node::eval(scope& s) {
         }
         return res;
       }
-      if(f_name == "sub") {
+      if(f_name == "*") {
+        value res;
+        res.val = 1;
+        for(int i = 0; i<args.size() && res.val != 0; ++i) {
+          res.val *= args[i] -> eval(s).val;
+        }
+        return res;
+      }
+      if(f_name == "/") {
+        value res;
+        res.val = 1;
+        if(args.size() == 0)
+          return res;
+        if(args.size() == 1) {
+          res.val = 1/(args[0] -> eval(s).val);
+          return res;
+        }
+        if(args.size() >= 2) {
+          res.val = args[0] -> eval(s).val;
+          for(int i = 1; i<args.size(); ++i) {
+            res.val /= args[i] -> eval(s).val;
+          }
+          return res;
+        }
+        return res;
+      }
+      if(f_name == "sub" || f_name == "-") {
         value res;
         res.val = 0;
         if(args.size() == 0)

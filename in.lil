@@ -4,6 +4,11 @@
           (1 0)
     )
   ))
-  (l l)
-  (sum 1000)
+  (factorial (\ (n)
+    (cond 
+      (n (* n (factorial (- n 1))))
+      (1 1)
+    )
+  ))
+  (/ (factorial 3) 2)
 )
