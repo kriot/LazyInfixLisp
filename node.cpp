@@ -15,8 +15,12 @@ void node::print(int n = 0) {
       cout << node_func->v_name << ":\n";
     else if(node_func->func)
       cout << "Anonymous func:\n";
+    else if(node_func->cons) {
+      node_func -> val.print();
+      cout << " (Not function):\n";
+    }
     else 
-      cout << "Error: Unknown function:\n";
+      cout << "Undef token:\n";
     for(int i = 0; i < args.size(); ++i) {
       args[i] -> print(n+1);
     }
@@ -49,6 +53,7 @@ node::node(ifstream &in) {
     if(f_name == "cond" ||
         f_name == "let" ||
         f_name == "\\"  ||
+        f_name == "sub"  ||
         f_name == "plus") {
       syst = true;
     }
@@ -100,6 +105,24 @@ value node::eval(scope& s) {
         }
         return res;
       }
+      if(f_name == "sub") {
+        value res;
+        res.val = 0;
+        if(args.size() == 0)
+          return res;
+        if(args.size() == 1) {
+          res.val = -args[0] -> eval(s).val;
+          return res;
+        }
+        if(args.size() >= 2) {
+          res.val = args[0] -> eval(s).val;
+          for(int i = 1; i<args.size(); ++i) {
+            res.val -= args[i] -> eval(s).val;
+          }
+          return res;
+        }
+        return res;
+      }
       if(f_name == "let") {
         scope s2;
         s2.parent = &s;
@@ -121,6 +144,16 @@ value node::eval(scope& s) {
         }
         res.func = args[1];
         return res;
+      }
+      if(f_name == "cond") {
+        for(int i = 0; i < args.size(); ++i) {
+          if(args[i] -> node_func -> eval(s) .val > 0) {
+            if(args[i] -> args.size() == 0) 
+              error("Syntax error in cond");
+            return args[i] -> args[0] -> eval(s); 
+          }
+        }
+        return value();
       }
     }
     else {
