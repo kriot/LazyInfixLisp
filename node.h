@@ -14,8 +14,8 @@ public:
   bool syst;
   bool vari;
   value val;
-  string f_name;
   vector<node*> args;
+  node* node_func;
   string v_name;
   node(ifstream &in);
   node();

@@ -11,7 +11,12 @@ void node::print() {
 void node::print(int n = 0) {
   print_n("\t", n);
   if(func) {
-    cout << f_name << ":\n";
+    if(node_func->vari)
+      cout << node_func->v_name << ":\n";
+    else if(node_func->func)
+      cout << "Anonymous func:\n";
+    else 
+      cout << "Error: Unknown function:\n";
     for(int i = 0; i < args.size(); ++i) {
       args[i] -> print(n+1);
     }
@@ -31,13 +36,16 @@ node::node(ifstream &in) {
   func = false;
   cons = false;
   vari = false;
+  v_name = "";
   whitespace(in);
   char c = in.peek();
   if(c == '(') {
     match(in, '(');
     
     func = true;
-    f_name = get_name(in);
+//    f_name = get_name(in);
+    node_func = (new node(in));
+    string f_name = node_func->v_name;
     if(f_name == "cond" ||
         f_name == "let" ||
         f_name == "\\"  ||
@@ -83,6 +91,7 @@ value node::eval(scope& s) {
   }
   if(func) {
     if(syst) {
+      string f_name = node_func->v_name;
       if(f_name == "plus") {
         value res;
         res.val = 0;
@@ -95,14 +104,18 @@ value node::eval(scope& s) {
         scope s2;
         s2.parent = &s;
         for(int i = 0; i < args.size() - 1; ++i) {
-          s2.val[args[i] -> f_name] = lazy(args[i]->args[0], s);
+          if(! args[i] -> node_func -> vari)
+            error("Syntax error in let");
+          s2.val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], s);
         }
         return args.back()->eval(s2);
       }
       if(f_name == "\\") {
         value res;
         res.is_func = true;
-        res.args_order.push_back(args[0]->f_name);
+        if(! args[0] -> node_func -> vari)
+          error("Syntax error in lambda defenition (args are wrong)");
+        res.args_order.push_back(args[0]->node_func->v_name);
         for(int i = 0; i < args[0]->args.size(); ++i) {
           res.args_order.push_back(args[0]->args[i]->v_name);
         }
@@ -111,7 +124,7 @@ value node::eval(scope& s) {
       }
     }
     else {
-      value f_val = s.find(f_name).delazy();
+      value f_val = node_func->eval(s);
       if(!f_val.is_func) {
         error("Can't call not function");
       }
