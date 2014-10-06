@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
   node n(in);
   n.print();  
   scope root_scope = scope();
+  root_scope.init_root();
   n.eval(root_scope).print();
   cout << "\n";
   in.close();

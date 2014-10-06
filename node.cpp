@@ -70,24 +70,6 @@ node::node(ifstream &in) {
 //    f_name = get_name(in);
     node_func = (new node(in));
     string f_name = node_func->v_name;
-    if(f_name == "cond" ||
-        f_name == "let" ||
-        f_name == "\\"  ||
-        f_name == "sub"  ||
-        f_name == "+"  ||
-        f_name == "-"  ||
-        f_name == "*"  ||
-        f_name == "/"  ||
-        f_name == ">"  ||
-        f_name == "<"  ||
-        f_name == ">="  ||
-        f_name == "<="  ||
-        f_name == "=="  ||
-        f_name == "!="  ||
-        f_name == "!"  ||
-        f_name == "plus") {
-      syst = true;
-    }
     while(whitespace(in), in.peek() != ')' && !in.eof()) 
     {
       args.push_back(new node(in));
@@ -114,7 +96,7 @@ node::node(ifstream &in) {
   cout << "unexpected symbol: " <<(char)in.get()<< "\n";
 }
 
-value func_eval(value f, vector<node*> args, scope& s) {
+value lambda_eval(value f, vector<node*> args, scope& s) {
   scope s2;
   s2.parent = &s;
   for(int i = 0; i < f.args_order.size(); ++i) {
@@ -122,6 +104,105 @@ value func_eval(value f, vector<node*> args, scope& s) {
   }
   return f.func->eval(s2);
 }
+
+value func_eval(node* node_func, vector<node*> args, scope& s) {
+  value f_val = node_func->eval(s);
+  if(!f_val.is_func) {
+    error("Can't call not function");
+  }
+
+  if(f_val.func -> syst)
+  {
+    string f_name = f_val.func -> v_name;
+    if(f_name == "plus" || f_name == "+") {
+      value res;
+      res.val = 0;
+      for(int i = 0; i<args.size(); ++i) {
+        res.val += args[i] -> eval(s).val;
+      }
+      return res;
+    }
+    if(f_name == "*") {
+      value res;
+      res.val = 1;
+      for(int i = 0; i<args.size() && res.val != 0; ++i) {
+        res.val *= args[i] -> eval(s).val;
+      }
+      return res;
+    }
+    if(f_name == "/") {
+      value res;
+      res.val = 1;
+      if(args.size() == 0)
+        return res;
+      if(args.size() == 1) {
+        res.val = 1/(args[0] -> eval(s).val);
+        return res;
+      }
+      if(args.size() >= 2) {
+        res.val = args[0] -> eval(s).val;
+        for(int i = 1; i<args.size(); ++i) {
+          res.val /= args[i] -> eval(s).val;
+        }
+        return res;
+      }
+      return res;
+    }
+    if(f_name == "sub" || f_name == "-") {
+      value res;
+      res.val = 0;
+      if(args.size() == 0)
+        return res;
+      if(args.size() == 1) {
+        res.val = -args[0] -> eval(s).val;
+        return res;
+      }
+      if(args.size() >= 2) {
+        res.val = args[0] -> eval(s).val;
+        for(int i = 1; i<args.size(); ++i) {
+          res.val -= args[i] -> eval(s).val;
+        }
+        return res;
+      }
+      return res;
+    }
+    if(f_name == "let") {
+      scope s2;
+      s2.parent = &s;
+      for(int i = 0; i < args.size() - 1; ++i) {
+        if(! args[i] -> node_func -> vari)
+          error("Syntax error in let");
+        s2.val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], s);
+      }
+      return args.back()->eval(s2);
+    }
+    if(f_name == "\\") {
+      value res;
+      res.is_func = true;
+      if(! args[0] -> node_func -> vari)
+        error("Syntax error in lambda defenition (args are wrong)");
+      res.args_order.push_back(args[0]->node_func->v_name);
+      for(int i = 0; i < args[0]->args.size(); ++i) {
+        res.args_order.push_back(args[0]->args[i]->v_name);
+      }
+      res.func = args[1];
+      return res;
+    }
+    if(f_name == "cond") {
+      for(int i = 0; i < args.size(); ++i) {
+        if(args[i] -> node_func -> eval(s) .val > 0) {
+          if(args[i] -> args.size() == 0) 
+            error("Syntax error in cond");
+          return args[i] -> args[0] -> eval(s); 
+        }
+      }
+      return value();
+    }
+  }
+  else
+    return lambda_eval(f_val, args, s);
+}
+
 value node::eval(scope& s) {
   if(cons)
     return val;
@@ -130,98 +211,9 @@ value node::eval(scope& s) {
   }
   if(func) {
     if(syst) {
-      string f_name = node_func->v_name;
-      if(f_name == "plus" || f_name == "+") {
-        value res;
-        res.val = 0;
-        for(int i = 0; i<args.size(); ++i) {
-          res.val += args[i] -> eval(s).val;
-        }
-        return res;
-      }
-      if(f_name == "*") {
-        value res;
-        res.val = 1;
-        for(int i = 0; i<args.size() && res.val != 0; ++i) {
-          res.val *= args[i] -> eval(s).val;
-        }
-        return res;
-      }
-      if(f_name == "/") {
-        value res;
-        res.val = 1;
-        if(args.size() == 0)
-          return res;
-        if(args.size() == 1) {
-          res.val = 1/(args[0] -> eval(s).val);
-          return res;
-        }
-        if(args.size() >= 2) {
-          res.val = args[0] -> eval(s).val;
-          for(int i = 1; i<args.size(); ++i) {
-            res.val /= args[i] -> eval(s).val;
-          }
-          return res;
-        }
-        return res;
-      }
-      if(f_name == "sub" || f_name == "-") {
-        value res;
-        res.val = 0;
-        if(args.size() == 0)
-          return res;
-        if(args.size() == 1) {
-          res.val = -args[0] -> eval(s).val;
-          return res;
-        }
-        if(args.size() >= 2) {
-          res.val = args[0] -> eval(s).val;
-          for(int i = 1; i<args.size(); ++i) {
-            res.val -= args[i] -> eval(s).val;
-          }
-          return res;
-        }
-        return res;
-      }
-      if(f_name == "let") {
-        scope s2;
-        s2.parent = &s;
-        for(int i = 0; i < args.size() - 1; ++i) {
-          if(! args[i] -> node_func -> vari)
-            error("Syntax error in let");
-          s2.val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], s);
-        }
-        return args.back()->eval(s2);
-      }
-      if(f_name == "\\") {
-        value res;
-        res.is_func = true;
-        if(! args[0] -> node_func -> vari)
-          error("Syntax error in lambda defenition (args are wrong)");
-        res.args_order.push_back(args[0]->node_func->v_name);
-        for(int i = 0; i < args[0]->args.size(); ++i) {
-          res.args_order.push_back(args[0]->args[i]->v_name);
-        }
-        res.func = args[1];
-        return res;
-      }
-      if(f_name == "cond") {
-        for(int i = 0; i < args.size(); ++i) {
-          if(args[i] -> node_func -> eval(s) .val > 0) {
-            if(args[i] -> args.size() == 0) 
-              error("Syntax error in cond");
-            return args[i] -> args[0] -> eval(s); 
-          }
-        }
-        return value();
-      }
     }
     else {
-      value f_val = node_func->eval(s);
-      if(!f_val.is_func) {
-        error("Can't call not function");
-      }
-      return func_eval(f_val, args, s);
+      return func_eval(node_func, args, s);
     }
   }
   else {
