@@ -97,9 +97,11 @@ node::node(ifstream &in) {
 }
 
 value lambda_eval(value f, vector<node*> args, scope& s) {
+  cout << "Lambda_eval\n";
   scope s2;
-  s2.parent = &s;
+  s2.parent = f.func_scope;
   for(int i = 0; i < f.args_order.size(); ++i) {
+    cout << "Adding to scope "<<f.args_order[i]<<"\n";
     s2.val[f.args_order[i]] = lazy(args[i], s);
   }
   return f.func->eval(s2);
@@ -179,6 +181,7 @@ value func_eval(node* node_func, vector<node*> args, scope& s) {
     if(f_name == "\\") {
       value res;
       res.is_func = true;
+      res.func_scope = &s;
       if(! args[0] -> node_func -> vari)
         error("Syntax error in lambda defenition (args are wrong)");
       res.args_order.push_back(args[0]->node_func->v_name);

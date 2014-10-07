@@ -10,5 +10,5 @@
       (1 1)
     )
   ))
-  (/ (factorial 3) 2)
+  (factorial 5)
 )
