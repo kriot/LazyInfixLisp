@@ -22,3 +22,8 @@ value lazy::delazy() {
     return default_value;
   return func_node->eval(*s);
 }
+
+void lazy::print() {
+  //TODO: normal printing
+  func_node->print();
+}

@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
   n.print();  
   scope root_scope = scope();
   root_scope.init_root();
+  root_scope.print();
   cout <<"\n\nResult:\n";
   n.eval(root_scope).print();
   cout << "\n";

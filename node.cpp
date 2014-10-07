@@ -98,13 +98,13 @@ node::node(ifstream &in) {
 
 value lambda_eval(value f, vector<node*> args, scope& s) {
   cout << "Lambda_eval\n";
-  scope s2;
-  s2.parent = f.func_scope;
+  scope *s2 = new scope();
+  s2 -> parent = f.func_scope;
   for(int i = 0; i < f.args_order.size(); ++i) {
     cout << "Adding to scope "<<f.args_order[i]<<"\n";
-    s2.val[f.args_order[i]] = lazy(args[i], s);
+    s2 -> val[f.args_order[i]] = lazy(args[i], s);
   }
-  return f.func->eval(s2);
+  return f.func->eval(*s2);
 }
 
 value func_eval(node* node_func, vector<node*> args, scope& s) {
@@ -169,14 +169,19 @@ value func_eval(node* node_func, vector<node*> args, scope& s) {
       return res;
     }
     if(f_name == "let") {
-      scope s2;
-      s2.parent = &s;
+      scope *s2 = new scope();
+      s2 -> parent = &s;
       for(int i = 0; i < args.size() - 1; ++i) {
         if(! args[i] -> node_func -> vari)
           error("Syntax error in let");
-        s2.val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], s);
+        s2 -> val[args[i] -> node_func -> v_name] = lazy(value());
       }
-      return args.back()->eval(s2);
+      for(int i = 0; i < args.size() - 1; ++i) {
+        if(! args[i] -> node_func -> vari)
+          error("Syntax error in let");
+        s2 -> val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], *s2);
+      }
+      return args.back()->eval(*s2);
     }
     if(f_name == "\\") {
       value res;

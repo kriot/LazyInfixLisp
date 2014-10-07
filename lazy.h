@@ -9,6 +9,7 @@ public:
   scope *s;
   bool has_default_value;
   value default_value;
+  void print();
   lazy(node *_fn, scope &_s);
   lazy(value v);
   lazy();

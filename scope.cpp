@@ -61,3 +61,12 @@ void scope::init_root() {
     val[name] = lazy(sys_f);
   }
 }
+
+void scope::print() {
+  for(auto i = val.begin(); i != val.end(); i++) {
+    cout << "Print:\n";
+    cout << i->first << ": ";
+//    i->second.print();
+    cout <<"\n";
+  }
+}
