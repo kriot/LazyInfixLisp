@@ -8,7 +8,7 @@ class scope;
 class value {
 public:
   bool is_func;
-  int val;
+  double val;
   node* func;
   scope* func_scope;
   vector<string> args_order;
