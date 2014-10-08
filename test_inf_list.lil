@@ -1,0 +1,36 @@
+(let 
+  (cons 
+    (\ (a b) 
+      (\ (x) 
+        (cond 
+          (x a)
+          (1 b)
+        )
+      )
+    )
+  )
+  (car 
+    (\ (a)
+      (a 1)
+    )
+  )
+  (cdr
+    (\ (a)
+      (a 0)
+    )
+  )
+  (let
+    (map (\ (l f)
+      (cons (f (car l)) (map (cdr l) f))
+    )) 
+    (genlist (\ (f n)
+      (cons (f n) (genlist f (+ n 1)))
+    ))
+    
+    (let 
+      (liste (genlist (\ (x) (* x 10)) 2))
+      
+      (car (cdr liste))
+    )
+  )
+)
