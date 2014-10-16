@@ -96,6 +96,7 @@ node::node(ifstream &in) {
   cout << "unexpected symbol: " <<(char)in.get()<< "\n";
 }
 
+/*
 value lambda_eval(value f, vector<node*> args, scope& s) {
   cout << "Lambda_eval\n";
   scope *s2 = new scope();
@@ -105,14 +106,18 @@ value lambda_eval(value f, vector<node*> args, scope& s) {
     s2 -> val[f.args_order[i]] = lazy(args[i], s);
   }
   return f.func->eval(*s2);
-}
+}*/
 
 value func_eval(node* node_func, vector<node*> args, scope& s) {
   value f_val = node_func->eval(s);
-  if(!f_val.is_func) {
+  cout << "FuncPtr " << f_val.func << "\n";
+  cout << f_val.type << "\n";
+  cout <<"End of f_val\n";
+  if(f_val.type != 1) {
     error("Can't call not function");
   }
-
+  cout << "Funccalling\n";
+/*
   if(f_val.func -> syst)
   {
     string f_name = f_val.func -> v_name;
@@ -207,8 +212,8 @@ value func_eval(node* node_func, vector<node*> args, scope& s) {
       return value();
     }
   }
-  else
-    return lambda_eval(f_val, args, s);
+  else*/
+    return f_val.func -> eval(args, s);
 }
 
 value node::eval(scope& s) {

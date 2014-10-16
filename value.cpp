@@ -2,28 +2,36 @@
 #include "value.h"
 #include "node.h"
 #include "scope.h"
+#include "lambda.h"
 
 void value::print() {
-  if(is_func) {
-    cout << "Lambda: \n";
-    cout << "Scope: \n";
-    func_scope -> print(); 
-    func->print();
-  }
-  else {
+  if(type == 0) {
+    cout << "Number: ";
     cout << val;
+    cout << "\n";
   }
-}
-value::value(int n) {
-  val = n;
-  is_func = false;
-} 
-value::value(node* fn) {
-  func = fn;
-  is_func = true;
+  else if(type == 1){
+    func -> print();
+  }
 }
 value::value() {
+  cout << "Val by default\n";
+  type = 0; //By default is number zero
+  
   val = 0;
-  is_func = false;
   func = nullptr;
+}
+
+value::value(double n) {
+  cout << "Val by double\n";
+  type = 0;
+  val = n;
+  func = nullptr;
+}
+
+value::value(lambda* fn) {
+  cout << "Val by fn\n";
+  type = 1;
+  func = fn;
+  val = 0;
 }

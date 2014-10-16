@@ -1,20 +1,19 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "lambda.h"
 using namespace std;
 class node;
 class scope;
 
 class value {
 public:
-  bool is_func;
-  double val;
-  node* func;
-  scope* func_scope;
-  vector<string> args_order;
+  char type;       
+  double val;   //type 0
+  lambda* func;  //type 1 
   void print();
-  value(int n);
-  value(node* fn);
   value();
+  value(double n);
+  value(lambda* fn);
 };
 
