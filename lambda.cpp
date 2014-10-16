@@ -112,21 +112,19 @@ value lambda_div::eval(vector<node*> args, scope &s) {
   return res;
 }
 value lambda_lambda::eval(vector<node*> args, scope &s) {
-  /*
-   * TODO: fix this code
-  value res;
-  res.is_func = true;
-  res.func_scope = &s;
+  lambda* f = new lambda();
+  f->func_scope = &s;
+  if(args.size() != 2)
+    error("Syntax error in lambda defenition (args are wrong)");
+
   if(! args[0] -> node_func -> vari)
     error("Syntax error in lambda defenition (args are wrong)");
-  res.args_order.push_back(args[0]->node_func->v_name);
+  f->args_order.push_back(args[0]->node_func->v_name);
   for(int i = 0; i < args[0]->args.size(); ++i) {
-    res.args_order.push_back(args[0]->args[i]->v_name);
+    f->args_order.push_back(args[0]->args[i]->v_name);
   }
-  res.func = args[1];
-  return res;
-  */
-  error("Cant make lambda. Check TODO");
+  f->func_node = args[1];
+  return value(f);
 }
 value lambda_cond::eval(vector<node*> args, scope &s) {
   for(int i = 0; i < args.size(); ++i) {
