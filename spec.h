@@ -8,6 +8,7 @@ void whitespace(ifstream &in);
 void error(string s);
 bool is_letter(char c);
 bool is_digit(char c);
+bool is_operator(char c); 
 string get_name(ifstream &in);
 int get_num(ifstream &in);
 

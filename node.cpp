@@ -5,7 +5,7 @@
 node::node() {
 }
 
-const int max_pr = 22;
+const int max_pr = 4;
 
 void node::print() {
   print(0);
@@ -38,21 +38,39 @@ void node::print(int n = 0) {
 }
 
 void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
-  if(pr == 0)
+  char c = in.peek();
+  if(c == '{')
   {
-    *n = node(in);
-    return;
+    match(in, '{');
+    get_operator_tree(in, n);
+    match(in, '}');
   }
-  node *lp = new node();
-  get_operator_tree(in, lp, pr-1);
-  node *fn = new node();
- // fn -> v_name = get_operator(in);
-  node *rp = new node();
-  get_operator_tree(in, rp, pr);
-  n -> node_func = fn;
-  n -> args.push_back(lp);
-  n -> args.push_back(rp);
-  n -> func = true;
+  else
+  {
+    if(pr == 0)
+    {
+      *n = node(in);
+      return;
+    }
+    node *lp = new node();
+    get_operator_tree(in, lp, pr-1);
+    c = in.peek();
+
+    if(is_operator(c))
+    {  
+      node *fn = new node(in);
+      node *rp = new node();
+      get_operator_tree(in, rp, pr);
+      n -> node_func = fn;
+      n -> args.push_back(lp);
+      n -> args.push_back(rp);
+      n -> func = true;
+    }
+    else 
+    {
+      *n = *lp;
+    }
+  }
 }
 
 node::node(ifstream &in) {
