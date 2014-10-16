@@ -58,3 +58,83 @@ value lambda_let::eval(vector<node*> args, scope &s) {
   }
   return args.back()->eval(*s2);
 }
+
+value lambda_add::eval(vector<node*> args, scope &s) {
+  value res;
+  res.val = 0;
+  for(int i = 0; i<args.size(); ++i) {
+    res.val += args[i] -> eval(s).val;
+  }
+  return res;
+}
+value lambda_sub::eval(vector<node*> args, scope &s) {
+  value res;
+  res.val = 0;
+  if(args.size() == 0)
+    return res;
+  if(args.size() == 1) {
+    res.val = -args[0] -> eval(s).val;
+    return res;
+  }
+  if(args.size() >= 2) {
+    res.val = args[0] -> eval(s).val;
+    for(int i = 1; i<args.size(); ++i) {
+      res.val -= args[i] -> eval(s).val;
+    }
+    return res;
+  }
+  return res;
+}
+value lambda_mul::eval(vector<node*> args, scope &s) {
+  value res;
+  res.val = 1;
+  for(int i = 0; i<args.size() && res.val != 0; ++i) {
+    res.val *= args[i] -> eval(s).val;
+  }
+  return res;
+}
+value lambda_div::eval(vector<node*> args, scope &s) {
+  value res;
+  res.val = 1;
+  if(args.size() == 0)
+    return res;
+  if(args.size() == 1) {
+    res.val = 1/(args[0] -> eval(s).val);
+    return res;
+  }
+  if(args.size() >= 2) {
+    res.val = args[0] -> eval(s).val;
+    for(int i = 1; i<args.size(); ++i) {
+      res.val /= args[i] -> eval(s).val;
+    }
+    return res;
+  }
+  return res;
+}
+value lambda_lambda::eval(vector<node*> args, scope &s) {
+  /*
+   * TODO: fix this code
+  value res;
+  res.is_func = true;
+  res.func_scope = &s;
+  if(! args[0] -> node_func -> vari)
+    error("Syntax error in lambda defenition (args are wrong)");
+  res.args_order.push_back(args[0]->node_func->v_name);
+  for(int i = 0; i < args[0]->args.size(); ++i) {
+    res.args_order.push_back(args[0]->args[i]->v_name);
+  }
+  res.func = args[1];
+  return res;
+  */
+  error("Cant make lambda. Check TODO");
+}
+value lambda_cond::eval(vector<node*> args, scope &s) {
+  for(int i = 0; i < args.size(); ++i) {
+    if(args[i] -> node_func -> eval(s) .val > 0) {
+      if(args[i] -> args.size() == 0) 
+        error("Syntax error in cond");
+      return args[i] -> args[0] -> eval(s); 
+    }
+  }
+  return value();
+}

@@ -20,3 +20,21 @@ public:
 class lambda_let : public lambda {
   value eval(vector<node*> args, scope &s);
 };
+class lambda_add : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_sub : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_mul : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_div : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_lambda : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_cond : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
