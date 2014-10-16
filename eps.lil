@@ -1,0 +1,27 @@
+(let
+  (e+ (\ (a b)
+    (\ (e)
+      (+ (a (/ e 2)) (b (/ e 2)))
+    )
+  ))
+  (econst (\ (c)
+    (\ (e)
+      c
+    )
+  ))
+  (ebadconst (\ (c)
+    (\ (e)
+      (+ c e)
+    )
+  ))
+
+  (let 
+    (r (ebadconst 5))
+    (t (econst 6))
+    (let
+      (s (e+ r t))
+      
+      (s 1)
+    )
+  )
+)
