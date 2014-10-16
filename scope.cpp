@@ -8,7 +8,6 @@
 
 lazy scope::find(string name) 
 {
-  cout << "Scope 'find' request: "<<name<<"\n";
   auto it = val.find(name);
   if(it != val.end()) 
   {
@@ -27,7 +26,6 @@ lazy scope::find(string name)
 }
 bool scope::has(string name) 
 {
-  cout << "Scope 'has' request: "<<name<<"\n";
   auto it = val.find(name);
   if(it != val.end()) 
   {

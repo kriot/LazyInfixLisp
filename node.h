@@ -11,7 +11,6 @@ class node {
 public:
   bool cons;
   bool func;
-  bool syst;
   bool vari;
   value val;
   vector<node*> args;

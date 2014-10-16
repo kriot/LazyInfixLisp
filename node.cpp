@@ -56,7 +56,6 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
 }
 
 node::node(ifstream &in) {
-  syst = false;
   func = false;
   cons = false;
   vari = false;
@@ -67,7 +66,7 @@ node::node(ifstream &in) {
     match(in, '(');
     
     func = true;
-//    f_name = get_name(in);
+
     node_func = (new node(in));
     string f_name = node_func->v_name;
     while(whitespace(in), in.peek() != ')' && !in.eof()) 
@@ -96,124 +95,13 @@ node::node(ifstream &in) {
   cout << "unexpected symbol: " <<(char)in.get()<< "\n";
 }
 
-/*
-value lambda_eval(value f, vector<node*> args, scope& s) {
-  cout << "Lambda_eval\n";
-  scope *s2 = new scope();
-  s2 -> parent = f.func_scope;
-  for(int i = 0; i < f.args_order.size(); ++i) {
-    cout << "Adding to scope "<<f.args_order[i]<<"\n";
-    s2 -> val[f.args_order[i]] = lazy(args[i], s);
-  }
-  return f.func->eval(*s2);
-}*/
-
 value func_eval(node* node_func, vector<node*> args, scope& s) {
   value f_val = node_func->eval(s);
-  cout << "FuncPtr " << f_val.func << "\n";
-  cout << f_val.type << "\n";
-  cout <<"End of f_val\n";
   if(f_val.type != 1) {
     error("Can't call not function");
   }
-  cout << "Funccalling\n";
-/*
-  if(f_val.func -> syst)
-  {
-    string f_name = f_val.func -> v_name;
-    if(f_name == "plus" || f_name == "+") {
-      value res;
-      res.val = 0;
-      for(int i = 0; i<args.size(); ++i) {
-        res.val += args[i] -> eval(s).val;
-      }
-      return res;
-    }
-    if(f_name == "*") {
-      value res;
-      res.val = 1;
-      for(int i = 0; i<args.size() && res.val != 0; ++i) {
-        res.val *= args[i] -> eval(s).val;
-      }
-      return res;
-    }
-    if(f_name == "/") {
-      value res;
-      res.val = 1;
-      if(args.size() == 0)
-        return res;
-      if(args.size() == 1) {
-        res.val = 1/(args[0] -> eval(s).val);
-        return res;
-      }
-      if(args.size() >= 2) {
-        res.val = args[0] -> eval(s).val;
-        for(int i = 1; i<args.size(); ++i) {
-          res.val /= args[i] -> eval(s).val;
-        }
-        return res;
-      }
-      return res;
-    }
-    if(f_name == "sub" || f_name == "-") {
-      value res;
-      res.val = 0;
-      if(args.size() == 0)
-        return res;
-      if(args.size() == 1) {
-        res.val = -args[0] -> eval(s).val;
-        return res;
-      }
-      if(args.size() >= 2) {
-        res.val = args[0] -> eval(s).val;
-        for(int i = 1; i<args.size(); ++i) {
-          res.val -= args[i] -> eval(s).val;
-        }
-        return res;
-      }
-      return res;
-    }
-    if(f_name == "let") {
-      scope *s2 = new scope();
-      s2 -> parent = &s;
-      for(int i = 0; i < args.size() - 1; ++i) {
-        if(! args[i] -> node_func -> vari)
-          error("Syntax error in let");
-        s2 -> val[args[i] -> node_func -> v_name] = lazy(value());
-      }
-      for(int i = 0; i < args.size() - 1; ++i) {
-        if(! args[i] -> node_func -> vari)
-          error("Syntax error in let");
-        s2 -> val[args[i] -> node_func -> v_name] = lazy(args[i]->args[0], *s2);
-      }
-      return args.back()->eval(*s2);
-    }
-    if(f_name == "\\") {
-      value res;
-      res.is_func = true;
-      res.func_scope = &s;
-      if(! args[0] -> node_func -> vari)
-        error("Syntax error in lambda defenition (args are wrong)");
-      res.args_order.push_back(args[0]->node_func->v_name);
-      for(int i = 0; i < args[0]->args.size(); ++i) {
-        res.args_order.push_back(args[0]->args[i]->v_name);
-      }
-      res.func = args[1];
-      return res;
-    }
-    if(f_name == "cond") {
-      for(int i = 0; i < args.size(); ++i) {
-        if(args[i] -> node_func -> eval(s) .val > 0) {
-          if(args[i] -> args.size() == 0) 
-            error("Syntax error in cond");
-          return args[i] -> args[0] -> eval(s); 
-        }
-      }
-      return value();
-    }
-  }
-  else*/
-    return f_val.func -> eval(args, s);
+
+  return f_val.func -> eval(args, s);
 }
 
 value node::eval(scope& s) {
@@ -223,11 +111,7 @@ value node::eval(scope& s) {
     return s.find(v_name).delazy();
   }
   if(func) {
-    if(syst) {
-    }
-    else {
-      return func_eval(node_func, args, s);
-    }
+    return func_eval(node_func, args, s);
   }
   else {
     error("Node without type");

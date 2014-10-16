@@ -24,11 +24,10 @@ lambda::lambda(node* _fn, scope* _fs, vector<string> _ao) {
 
 value lambda::eval(vector<node*> args, scope &s) {
   //TODO: Check is func not null
-  cout << "Lambda_eval\n";
   scope *s2 = new scope();
   s2 -> parent = func_scope;
+  //Adding to scope args:
   for(int i = 0; i < args_order.size(); ++i) {
-    cout << "Adding to scope arg: "<<args_order[i]<<"\n";
     s2 -> val[args_order[i]] = lazy(args[i], s);
   }
   return func_node->eval(*s2);

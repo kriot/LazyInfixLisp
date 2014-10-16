@@ -15,7 +15,6 @@ void value::print() {
   }
 }
 value::value() {
-  cout << "Val by default\n";
   type = 0; //By default is number zero
   
   val = 0;
@@ -23,14 +22,12 @@ value::value() {
 }
 
 value::value(double n) {
-  cout << "Val by double\n";
   type = 0;
   val = n;
   func = nullptr;
 }
 
 value::value(lambda* fn) {
-  cout << "Val by fn\n";
   type = 1;
   func = fn;
   val = 0;
