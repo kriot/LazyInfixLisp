@@ -38,11 +38,13 @@ void node::print(int n = 0) {
 }
 
 void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
+  whitespace(in);
   char c = in.peek();
   if(c == '{')
   {
     match(in, '{');
     get_operator_tree(in, n);
+    whitespace(in);
     match(in, '}');
   }
   else
@@ -55,6 +57,7 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
     node *lp = new node();
     get_operator_tree(in, lp, pr-1);
 
+    whitespace(in);
     string op = get_operator(in);
     put_back(in, op);
     int op_pr = get_operator_priority(op);
