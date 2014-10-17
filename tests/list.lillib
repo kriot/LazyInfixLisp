@@ -1,0 +1,27 @@
+(let
+  (cons 
+    (\ (a b) 
+      (\ (x) 
+        (cond 
+          (x a)
+          (1 b)
+        )
+      )
+    )
+  )
+  (car 
+    (\ (a)
+      (a 1)
+    )
+  )
+  (cdr
+    (\ (a)
+      (a 0)
+    )
+  )
+  (map 
+    (\ (l f)
+      (cons (f (car l)) (map (cdr l) f))
+    )
+  ) 
+)

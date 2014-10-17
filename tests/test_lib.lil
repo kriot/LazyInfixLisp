@@ -1,0 +1,5 @@
+(let
+  (a (cons 3 1))
+  (b (cons 2 a))
+  (car (cdr b))
+)

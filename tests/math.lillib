@@ -1,0 +1,12 @@
+(let
+  (factorial
+    (\ (n)
+      (cond 
+        (n 
+          {n*(factorial {n-1})}
+        )
+        (1 1)
+      )
+    )
+  )
+)
