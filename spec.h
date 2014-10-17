@@ -12,6 +12,6 @@ bool is_digit(char c);
 bool is_operator(char c); 
 string get_operator(ifstream& in);
 int get_operator_priority(string c);
-string get_name(ifstream &in);
+string get_name(ifstream &in, bool allow_op_in_name);
 int get_num(ifstream &in);
 void put_back(ifstream &in, string s);

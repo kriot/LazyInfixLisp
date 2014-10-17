@@ -49,7 +49,7 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
   {
     if(pr == 0)
     {
-      *n = node(in);
+      *n = node(in, false);
       return;
     }
     node *lp = new node();
@@ -75,7 +75,7 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
   }
 }
 
-node::node(ifstream &in) {
+node::node(ifstream &in, bool allow_op_in_name /*= true*/) {
   func = false;
   cons = false;
   vari = false;
@@ -100,7 +100,7 @@ node::node(ifstream &in) {
   if(is_letter(c) || is_digit(c)) {
     if(is_letter(c)) {
       vari = true;
-      v_name = get_name(in);
+      v_name = get_name(in, allow_op_in_name);
       return;
     }
     if(is_digit(c)) {
@@ -111,6 +111,7 @@ node::node(ifstream &in) {
   }
   if(c == '{') {
     get_operator_tree(in, this);
+    return;
   }
   char unc = in.get();
   cout << "unexpected symbol: " <<unc << " ("<<(int)unc<< ")\n";

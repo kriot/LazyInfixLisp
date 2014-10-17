@@ -16,7 +16,7 @@ public:
   vector<node*> args;
   node* node_func;
   string v_name;
-  node(ifstream &in);
+  node(ifstream &in, bool allow_op_in_name = true);
   node();
   void print(int n);
   void print();

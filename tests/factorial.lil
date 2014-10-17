@@ -1,0 +1,9 @@
+(let
+  (fact (\ (n)
+    (cond 
+     (n {n*(fact {n-1})})
+     (1 1)
+    )
+  ))
+  (fact 10)
+)

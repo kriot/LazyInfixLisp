@@ -84,9 +84,9 @@ bool is_digit(char c) {
   return c >= '0' && c <='9';
 }
 
-string get_name(ifstream &in) {
+string get_name(ifstream &in, bool allow_op_in_name) {
   string res;
-  while (is_letter(in.peek())) {
+  while (is_letter(in.peek()) && (allow_op_in_name || !is_operator(in.peek()))) {
     res.push_back(in.get());
   }
   return res;
