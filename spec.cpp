@@ -57,6 +57,29 @@ bool is_operator(char c) {
     c == '%';
 }
 
+string get_operator(ifstream &in) {
+  string res = "";
+  while(is_operator(in.peek())) {
+    res += in.get();
+  }
+  return res;
+}
+
+int get_operator_priority(string c) {
+  if(
+      c == "*" ||
+      c == "/" 
+    )
+    return 2;
+  if(
+      c == "+" ||
+      c == "-"
+    )
+    return 3;
+  
+  return -1;
+}
+
 bool is_digit(char c) {
   return c >= '0' && c <='9';
 }
@@ -81,4 +104,10 @@ int get_num(ifstream &in) {
 void error(string s) {
   cout << "Error: " << s <<"\n";
   exit(0); 
+}
+
+void put_back(ifstream &in, string s) {
+  for(int i = s.size() - 1; i >= 0; i--) { 
+    in.putback(s[i]);
+  }
 }

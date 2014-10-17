@@ -54,9 +54,11 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
     }
     node *lp = new node();
     get_operator_tree(in, lp, pr-1);
-    c = in.peek();
 
-    if(is_operator(c))
+    string op = get_operator(in);
+    put_back(in, op);
+    int op_pr = get_operator_priority(op);
+    if(op_pr != -1 && op_pr <= pr)
     {  
       node *fn = new node(in);
       node *rp = new node();
@@ -110,7 +112,8 @@ node::node(ifstream &in) {
   if(c == '{') {
     get_operator_tree(in, this);
   }
-  cout << "unexpected symbol: " <<(char)in.get()<< "\n";
+  char unc = in.get();
+  cout << "unexpected symbol: " <<unc << " ("<<(int)unc<< ")\n";
 }
 
 value func_eval(node* node_func, vector<node*> args, scope& s) {
