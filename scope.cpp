@@ -6,12 +6,12 @@
 #include "lazy.h"
 #include "spec.h"
 
-lazy scope::find(string name) 
+lazy* scope::find(string name) 
 {
   auto it = val.find(name);
   if(it != val.end()) 
   {
-    return it->second;
+    return &it->second;
   }
   else 
   {

@@ -133,7 +133,7 @@ value node::eval(scope& s) {
   if(cons)
     return val;
   if(vari) {
-    return s.find(v_name).delazy();
+    return s.find(v_name)->delazy();
   }
   if(func) {
     return func_eval(node_func, args, s);
