@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
   scope root_scope = scope();
   root_scope.init_root();
   scope* s = &root_scope;
-  vector<string> libs = {"list", "math"};
+  vector<string> libs = {"sys", "list", "math"};
   for(int i = 0; i < libs.size(); i++)
     s = loadlib(libs[i]+".lillib", s);
   cout <<"\n\nResult:\n";

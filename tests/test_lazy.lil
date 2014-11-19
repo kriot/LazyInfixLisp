@@ -1,0 +1,9 @@
+(let 
+  (f (\ (n) n))
+  (g +)
+  (a (f 1))
+  (*
+    (g a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a)
+    (g (f 1) (f 1) (f 1))
+  )
+)

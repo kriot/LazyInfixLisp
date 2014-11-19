@@ -58,6 +58,8 @@ value lambda_let::eval(vector<node*> args, scope &s) {
   return args.back()->eval(*s2);
 }
 
+// TODO: <, <=, >, >= and other functions
+
 value lambda_add::eval(vector<node*> args, scope &s) {
   value res;
   res.val = 0;
