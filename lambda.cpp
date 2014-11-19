@@ -23,14 +23,37 @@ lambda::lambda(node* _fn, scope* _fs, vector<string> _ao) {
 }
 
 value lambda::eval(vector<node*> args, scope &s) {
-  //TODO: Check is func not null
-  scope *s2 = new scope();
-  s2 -> parent = func_scope;
-  //Adding to scope args:
-  for(int i = 0; i < args_order.size(); ++i) {
-    s2 -> val[args_order[i]] = lazy(args[i], s);
+  if(memorize) {
+    vector<value> cargs(args.size());
+    for(int i = 0; i < args.size(); ++i) {
+      cargs[i] = args[i]->eval(s);
+    }
+    auto it = mem.find(cargs);
+    if(it != mem.end())
+      return it->second;
+    else {
+      //TODO: Check is func not null
+      scope *s2 = new scope();
+      s2 -> parent = func_scope;
+      //Adding to scope args:
+      for(int i = 0; i < args_order.size(); ++i) {
+        s2 -> val[args_order[i]] = lazy(cargs[i]);
+      }
+      value res = func_node->eval(*s2);
+      mem[cargs] = res;
+      return res;
+    }
   }
-  return func_node->eval(*s2);
+  else {
+    //TODO: Check is func not null
+    scope *s2 = new scope();
+    s2 -> parent = func_scope;
+    //Adding to scope args:
+    for(int i = 0; i < args_order.size(); ++i) {
+      s2 -> val[args_order[i]] = lazy(args[i], s);
+    }
+    return func_node->eval(*s2);
+  }
 }
 
 void lambda::print() {
@@ -115,16 +138,24 @@ value lambda_div::eval(vector<node*> args, scope &s) {
 value lambda_lambda::eval(vector<node*> args, scope &s) {
   lambda* f = new lambda();
   f->func_scope = &s;
-  if(args.size() != 2)
+  
+  int start = 0; //Index of argument of list of lambda's arguments
+
+  if(args[0] -> v_name == "mem") {
+    f -> memorize = true;
+    start = 1;
+  }
+
+  if(args.size() != start + 2)
     error("Syntax error in lambda defenition (args are wrong)");
 
-  if(! args[0] -> node_func -> vari)
+  if(! args[start] -> node_func -> vari)
     error("Syntax error in lambda defenition (args are wrong)");
-  f->args_order.push_back(args[0]->node_func->v_name);
-  for(int i = 0; i < args[0]->args.size(); ++i) {
-    f->args_order.push_back(args[0]->args[i]->v_name);
+  f->args_order.push_back(args[start]->node_func->v_name);
+  for(int i = 0; i < args[start]->args.size(); ++i) {
+    f->args_order.push_back(args[start]->args[i]->v_name);
   }
-  f->func_node = args[1];
+  f->func_node = args[start+1];
   return value(f);
 }
 value lambda_cond::eval(vector<node*> args, scope &s) {

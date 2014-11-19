@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <map>
 using namespace std;
 class node;
 class scope;
@@ -8,6 +9,8 @@ class value;
 
 class lambda {
 public:
+  bool memorize = false;
+  map<vector<value>, value> mem;
   node* func_node;
   scope* func_scope;
   vector<string> args_order;

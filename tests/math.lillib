@@ -9,7 +9,7 @@
       )
     )
   )
-  (cnk (\ (n k)
+  (cnk (\ mem (n k)
       (cond 
         ((< n 0) 0)
         ((< k 0) 0)

@@ -32,3 +32,12 @@ value::value(lambda* fn) {
   func = fn;
   val = 0;
 }
+
+bool value::operator<(const value v2) const {
+  if(type != v2.type) 
+    return type < v2.type;
+  if(type == 0)
+    return val < v2.val;
+  if(type == 1)
+    return ((long long)func) < ((long long)v2.func);
+} 

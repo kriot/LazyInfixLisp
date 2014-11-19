@@ -15,5 +15,6 @@ public:
   value();
   value(double n);
   value(lambda* fn);
+  bool operator<(const value v2) const;
 };
 
