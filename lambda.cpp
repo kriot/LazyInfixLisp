@@ -168,3 +168,15 @@ value lambda_cond::eval(vector<node*> args, scope &s) {
   }
   return value();
 }
+value lambda_read::eval(vector<node*> args, scope &s) {
+  value res;
+  cin >> res.val;
+  return res;
+}
+value lambda_print::eval(vector<node*> args, scope &s) {
+  for(int i = 0; i < args.size(); ++i) {
+    cout << args[i] -> eval(s).val << " ";
+  }
+  cout << "\n";
+  return value();
+}

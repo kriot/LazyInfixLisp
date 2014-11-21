@@ -54,6 +54,8 @@ void scope::init_root() {
   lambda_div* div = new lambda_div();
   lambda_cond* cond = new lambda_cond();
   lambda_lambda* flambda = new lambda_lambda(); //Because lambda is reserved by class-name
+  lambda_read* read = new lambda_read();
+  lambda_print* print = new lambda_print();
 
   val["let"] = lazy(value(let));
   val["+"] = lazy(value(add));
@@ -63,6 +65,8 @@ void scope::init_root() {
   val["cond"] = lazy(value(cond));
   val["\\"] = lazy(value(flambda));
   val["lambda"] = lazy(value(flambda));
+  val["read"] = lazy(value(read));
+  val["print"] = lazy(value(print));
 }
 
 void scope::print() {

@@ -23,6 +23,12 @@ public:
 class lambda_let : public lambda {
   value eval(vector<node*> args, scope &s);
 };
+class lambda_read : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
+class lambda_print : public lambda {
+  value eval(vector<node*> args, scope &s);
+};
 class lambda_add : public lambda {
   value eval(vector<node*> args, scope &s);
 };
