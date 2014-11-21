@@ -1,0 +1,36 @@
+(let
+  (createState (\ (dat time)
+    (\ (n)
+      (cond
+        ((= n 0) dat)
+        ((= n 1) time)
+        (1 -1)
+      )
+    )
+  ))
+  (F  (\ (f) 
+    (\ (sa)
+      (createState (f (sa 0)) {(sa 1)+1})
+    )
+  ))
+  (idf (\ (x) x))
+  (compose (\ (f n)
+    (cond 
+      ((= n 0) idf)
+      (1 
+        (\ (x)
+          (f ((compose f {n-1}) x))
+        )
+      )
+    )
+  ))
+  (let 
+    (fn (\ (x)
+      err
+    ))
+    (
+      ((compose (F fn) 5) (createState 3 0))
+      1
+    )
+  )
+)
