@@ -1,0 +1,57 @@
+(let
+  (createState (\ (dat time)
+    (\ (n)
+      (cond
+        ((= n 0) dat)
+        ((= n 1) time)
+        (1 -1)
+      )
+    )
+  ))
+  (F  (\ (f) 
+    (\ (sa)
+      (createState (f (sa 0)) {(sa 1)+1})
+    )
+  ))
+  (let
+    (IOF (\ (f)
+      (\ (sa)
+        (createState (f (sa 0)) (sa 1))
+      )
+    ))
+    (IOFtwo (\ (f)
+      (\ (sa sb)
+        (createState (f (sa 0) (sb 0)) (+ (sa 1) (sb 1)))
+      )
+    ))
+    (IOdat (\ (a)
+      (createState a 0)
+    ))
+    (IOread (\ (sa)
+      (let 
+        (rs (read (sa 1)))
+        (createState (rs 0) (+ (rs 1) (sa 1)))
+      ) 
+    ))
+    (IOstart 
+      (\ (n)
+        4
+      )
+    )
+    (let
+      (f (\ (x) (+ x 1)))
+      (g (\ (x) (* x 2)))
+
+      (IOr (\ (sa)
+        (let
+          (h (IOread sa))
+          ((IOFtwo *) h sa)
+        )
+      ))
+      (  
+        (IOr ((IOF f) (IOread IOstart)))
+        0
+      )
+    )
+  )
+)

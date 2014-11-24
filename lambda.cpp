@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include "lambda.h"
 #include "node.h"
@@ -169,9 +170,20 @@ value lambda_cond::eval(vector<node*> args, scope &s) {
   return value();
 }
 value lambda_read::eval(vector<node*> args, scope &s) {
-  value res;
-  cin >> res.val;
-  return res;
+  lambda* res = new lambda();
+  res->func_scope = new scope();
+  //TODO: use something else (cond, = may be invalid)
+  res->func_scope->parent = &s;
+  res->func_scope->val["st"] = lazy(args[0]->eval(s));
+  int r;
+  cin >> r;
+  res->func_scope->val["r"] = lazy(r);
+  res->args_order.push_back("n");
+  string ev ="(cond ((= n 0) r) (1 st))";
+  istringstream ss;
+  ss.str(ev);
+  res->func_node = new node(ss);
+  return value(res);
 }
 value lambda_print::eval(vector<node*> args, scope &s) {
   for(int i = 0; i < args.size(); ++i) {

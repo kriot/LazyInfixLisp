@@ -5,7 +5,7 @@ void print_n(string s, int n) {
   }
 }
 
-void match(ifstream &in, char c) {
+void match(istream &in, char c) {
   char v = in.get();
   if(c!=v) {
     cout << "Error: expected '" << c <<"', got '"<< v <<"'\n'";
@@ -13,7 +13,7 @@ void match(ifstream &in, char c) {
   }
 }
 
-void whitespace(ifstream &in) {
+void whitespace(istream &in) {
   while(in.peek() == ' ' ||
       in.peek() == '\t' ||
       in.peek() == '\n' ||
@@ -61,7 +61,7 @@ bool is_operator(char c) {
     c == '%';
 }
 
-string get_operator(ifstream &in) {
+string get_operator(istream &in) {
   string res = "";
   while(is_operator(in.peek())) {
     res += in.get();
@@ -88,7 +88,7 @@ bool is_digit(char c) {
   return c >= '0' && c <='9';
 }
 
-string get_name(ifstream &in, bool allow_op_in_name) {
+string get_name(istream &in, bool allow_op_in_name) {
   string res;
   while (is_letter(in.peek()) && (allow_op_in_name || !is_operator(in.peek()))) {
     res.push_back(in.get());
@@ -96,7 +96,7 @@ string get_name(ifstream &in, bool allow_op_in_name) {
   return res;
 }
 
-int get_num(ifstream &in) {
+int get_num(istream &in) {
   int res = 0;
   while (is_digit(in.peek())) {
     res *= 10;
@@ -110,7 +110,7 @@ void error(string s) {
   exit(0); 
 }
 
-void put_back(ifstream &in, string s) {
+void put_back(istream &in, string s) {
   for(int i = s.size() - 1; i >= 0; i--) { 
     in.putback(s[i]);
   }

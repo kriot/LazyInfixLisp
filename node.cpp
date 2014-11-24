@@ -37,7 +37,7 @@ void node::print(int n = 0) {
   }
 }
 
-void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
+void get_operator_tree(istream &in, node *n, int pr = max_pr) {
   whitespace(in);
   char c = in.peek();
   if(c == '{')
@@ -78,7 +78,7 @@ void get_operator_tree(ifstream &in, node *n, int pr = max_pr) {
   }
 }
 
-node::node(ifstream &in, bool allow_op_in_name /*= true*/) {
+node::node(istream &in, bool allow_op_in_name /*= true*/) {
   func = false;
   cons = false;
   vari = false;

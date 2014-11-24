@@ -1,3 +1,5 @@
 (let
-  (print (read))
+  (b (read))
+  (a (read))
+  (print b a b)
 )
