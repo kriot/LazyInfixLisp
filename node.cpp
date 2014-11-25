@@ -1,3 +1,4 @@
+#include <functional>
 #include "spec.h"
 #include "node.h"
 #include "scope.h"
@@ -114,6 +115,13 @@ node::node(istream &in, bool allow_op_in_name /*= true*/) {
   }
   if(c == '{') {
     get_operator_tree(in, this);
+    return;
+  }
+  if(c == '\'') {
+    match(in, '\'');
+    cons = true;
+    hash<string> str_hash;
+    val = value((double)str_hash((string)get_name(in, true)));
     return;
   }
   char unc = in.get();
