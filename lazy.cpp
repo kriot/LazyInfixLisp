@@ -20,10 +20,8 @@ lazy::lazy(value v) {
 
 value lazy::delazy() {
   if(has_default_value) {
-    cout << "Restore lazy "<< this <<"\n";
     return default_value;
   }
-  cout << "Eval lazy "<<this<<"\n";
   default_value = func_node->eval(*s);
   has_default_value = true;
   return default_value;

@@ -22,7 +22,6 @@ int main(int argc, char* argv[])
   }
   in.open(argv[1]);
   node n(in);
-  n.print();  
   scope root_scope = scope();
   root_scope.init_root();
   scope* s = &root_scope;

@@ -18,8 +18,7 @@ public:
   string v_name;
   node(istream &in, bool allow_op_in_name = true);
   node();
-  void print(int n);
-  void print();
+  void print(int n = 0);
   value eval(scope &s);
 };
 

@@ -8,10 +8,7 @@ node::node() {
 
 const int max_pr = 4;
 
-void node::print() {
-  print(0);
-}
-void node::print(int n = 0) {
+void node::print(int n /* = 0 */) {
   print_n("\t", n);
   if(func) {
     if(node_func->vari)
@@ -101,20 +98,18 @@ node::node(istream &in, bool allow_op_in_name /*= true*/) {
     match(in, ')');
     return;
   }
-  if(is_letter(c) || is_digit(c)) {
-    if(is_letter(c)) {
-      vari = true;
-      v_name = get_name(in, allow_op_in_name);
-      return;
-    }
-    if(is_digit(c)) {
-      cons = true;
-      val = value(get_num(in));
-      return;
-    }
-  }
   if(c == '{') {
     get_operator_tree(in, this);
+    return;
+  }
+  if(is_letter(c)) {
+    vari = true;
+    v_name = get_name(in, allow_op_in_name);
+    return;
+  }
+  if(is_digit(c)) {
+    cons = true;
+    val = value(get_num(in));
     return;
   }
   if(c == '\'') {
@@ -131,6 +126,8 @@ node::node(istream &in, bool allow_op_in_name /*= true*/) {
 value func_eval(node* node_func, vector<node*> args, scope& s) {
   value f_val = node_func->eval(s);
   if(f_val.type != 1) {
+    s.print();
+    node_func->print();
     error("Can't call not function");
   }
 
