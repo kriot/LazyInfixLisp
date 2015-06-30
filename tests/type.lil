@@ -1,0 +1,24 @@
+(let
+  (FunctorI (\ (F val)
+    (\ (k)
+      (cond 
+        ((= k '=>) 
+          (\ (f)
+            (FunctorI F ((F f) val))
+          )
+        )
+        ((= k '=>>)
+          (\ (f)
+            (FunctorI F (f val))
+          )
+        )
+      )
+    )
+  )) 
+  (let
+    (Qdata (\ (a b)
+      (cons a b)
+    ))
+    (Q+ (
+  )
+)

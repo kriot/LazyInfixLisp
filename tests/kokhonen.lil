@@ -1,0 +1,21 @@
+(let
+  (scalar (\ (a b)
+    (cond
+      ((= (length a) 0) 0)
+      ((= (length b) 0) 0)
+      (+
+        {(car a)*(car b)}
+        (scalar (cdr a) (cdr b))
+      )
+    )
+  ))
+  (MaxDat (\ (a va b vb)
+    (cond 
+      ((>= a b) va)
+      (1 vb)
+    )
+  ))
+  (argMax (\ (xs f) 
+    (cond 
+  ))
+)
