@@ -18,6 +18,12 @@ It will be:
 
 #Syntax
 
+You can use infix notation by the brakets `{`, `}`.
+```
+(cnk 3 {3+3})
+```
+
+
 ##Let
 ```
 (let
@@ -32,6 +38,7 @@ Note: `'olo` is string (at interpritation it transforms to its hash) that can be
 At the time of defention the symbols are defened, so there can be recursive defenition. New defenition overrides older (with same name).
 
 ##Lambda
+
 Defenition:
 ```
 (\ (a b c) (+ a c))
