@@ -1,0 +1,8 @@
+(let
+	(true (\ (x y) x))
+	(false (\ (x y) y))
+	(not (\ (f) (\ (x y) (f y x))))
+	(if (\ (x) x))
+	((if (not true)) 1 2)
+)
+	 
